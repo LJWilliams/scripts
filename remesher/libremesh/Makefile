@@ -30,7 +30,7 @@ depend:
 	${COMPILER} ${GCC_INCL} -MM ${SOURCES} > Makefile.dep
 
 %.o: %.cc
-	${COMPILER} -fPIE -c -o $@ $< ${GCC_FLAGS} ${GCC_INCL} -Wno-deprecated
+	${COMPILER} -no-pie -fPIE -c -o $@ $< ${GCC_FLAGS} ${GCC_INCL} -Wno-deprecated
 
 clean: FORCE
 	rm -f ${OBJECTS} ${LIBRARY} test.o test
