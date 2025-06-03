@@ -12,7 +12,7 @@ all: libraries ${OBJECTS}
 	${COMPILER} -o ${BINARY} ${OBJECTS} ${GCC_LINK} ${GSL_LIBS}
 
 multicore:
-	$(MAKE) -j${CORES} all
+	$(MAKE) -j ${CORES} all
 
 depend:
 	${COMPILER} ${GCC_INCL} -MM ${SOURCES} > Makefile.dep
