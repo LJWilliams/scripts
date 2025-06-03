@@ -5,7 +5,7 @@ OBJECTS = $(foreach file,$(SOURCES),$(subst .cc,.o,$(file)))
 BINARY = cmdremesher
 
 GCC_INCL = -I..
-GCC_LINK = -fPIE -L../libremesh -lremesh -lpthread
+GCC_LINK = -L../libremesh -lremesh -lpthread
 GSL_LIBS = $(shell pkg-config --libs gsl)
 
 all: libraries ${OBJECTS}
