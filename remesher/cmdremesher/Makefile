@@ -9,7 +9,7 @@ GCC_LINK = -L../libremesh -lremesh -lpthread
 GSL_LIBS = $(shell pkg-config --libs gsl)
 
 all: libraries ${OBJECTS}
-	${COMPILER} -fPIC -o ${BINARY} ${OBJECTS} ${GCC_LINK} ${GSL_LIBS}
+	${COMPILER} -fPIE -o ${BINARY} ${OBJECTS} ${GCC_LINK} ${GSL_LIBS}
 
 multicore:
 	$(MAKE) -j${CORES} all
