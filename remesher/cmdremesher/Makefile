@@ -5,11 +5,11 @@ OBJECTS = $(foreach file,$(SOURCES),$(subst .cc,.o,$(file)))
 BINARY = cmdremesher
 
 GCC_INCL = -I..
-GCC_LINK = -L../libremesh -lremesh -lpthread
+GCC_LINK = -fPIE -L../libremesh -lremesh -lpthread
 GSL_LIBS = $(shell pkg-config --libs gsl)
 
 all: libraries ${OBJECTS}
-	${COMPILER} -fPIE -o ${BINARY} ${OBJECTS} ${GCC_LINK} ${GSL_LIBS}
+	${COMPILER} -o ${BINARY} ${OBJECTS} ${GCC_LINK} ${GSL_LIBS}
 
 multicore:
 	$(MAKE) -j${CORES} all
