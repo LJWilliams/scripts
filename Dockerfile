@@ -1,4 +1,4 @@
-# To build this image, you'll need to download FreeSurfer, MNE
+## To build this image, you'll need to download FreeSurfer, MNE
 # and have a valid FreeSurfer license file, and put them into your scripts directory.
 # To build:  cd path_to_scripts; docker build -t docker_scripts .
 # To run: docker run -it -v <path_to_your_subject_folder_on_host>:/opt/processing docker_scripts /bin/bash
@@ -7,7 +7,7 @@
 # also you can use: docker images
 
 FROM ubuntu:22.04
-MAINTAINER timpx <timpx@eml.cc>
+#MAINTAINER timpx <timpx@eml.cc>
 
 # /opt used during installation, but 
 # /opt/scripts is final workdir, set below
@@ -60,7 +60,7 @@ COPY ./license.txt /opt/freesurfer/7.4.1/license.txt
 
  # FS, FSL, MNE env vars 
  ENV FIX_VERTEX_AREA= \
-    FREESURFER_HOME=/usr/local/freesurfer/7.4.1/bin/freesurfer \
+    FREESURFER_HOME=/usr/local/freesurfer/7.4.1 \
     FSFAST_HOME=/usr/local/freesurfer/7.4.1/bin/freesurfer/fsfast \
     FSF_OUTPUT_FORMAT=nii.gz \
     FS_OVERRIDE=0 \
@@ -90,7 +90,6 @@ COPY ./license.txt /opt/freesurfer/7.4.1/license.txt
     FSLTCLSH=/usr/bin/tclsh \
     FSLWISH=/usr/bin/wish \
     POSSUMDIR=/usr/share/fsl
-
 
 # Mrtrix3 ----------------------
 RUN conda install -c conda-forge -c MRtrix3 mrtrix3 libstdcxx-ng
@@ -124,6 +123,8 @@ RUN git clone https://github.com/LJWilliams/scripts.git /opt/scripts
 RUN cd /opt/scripts/remesher/libremesh && make clean && cd /opt/scripts/remesher/cmdremesher && make clean && make
 WORKDIR /opt/scripts
 RUN mkdir /opt/processing
+
+ENTRYPOINT ["/bin/sh", "-c", "source $FREESURFER_HOME/SetUpFreeSurfer.sh"]
 
 #TODO for compatibility with tvb-make
 #ENTRYPOINT ["make"]
