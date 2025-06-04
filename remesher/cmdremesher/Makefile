@@ -18,7 +18,7 @@ depend:
 	${COMPILER} ${GCC_INCL} -MM ${SOURCES} > Makefile.dep
 
 %.o: %.cc
-	${COMPILER} -c -o $@ $< ${GCC_FLAGS} ${GCC_INCL}
+	${COMPILER} -fPIE -c -o $@ $< ${GCC_FLAGS} ${GCC_INCL}
 
 clean: FORCE
 	rm -f ${BINARY} ${OBJECTS}
