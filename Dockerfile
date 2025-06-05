@@ -125,8 +125,4 @@ RUN cd /opt/scripts/remesher/libremesh && make clean && cd /opt/scripts/remesher
 WORKDIR /opt/scripts
 RUN mkdir /opt/processing
 
-ENTRYPOINT ["/bin/bash", "-c", "source $FREESURFER_HOME/SetUpFreeSurfer.sh"]
-CMD ["exec", "\"${@}\""]
-
-#TODO for compatibility with tvb-make
-#ENTRYPOINT ["make"]
+ENTRYPOINT ["/bin/bash", "-c", "source $FREESURFER_HOME/SetUpFreeSurfer.sh && exec '${@}'"]
