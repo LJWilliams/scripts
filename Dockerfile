@@ -125,6 +125,7 @@ WORKDIR /opt/scripts
 RUN mkdir /opt/processing
 
 ENTRYPOINT ["/bin/sh", "-c", "source $FREESURFER_HOME/SetUpFreeSurfer.sh"]
+CMD ["exec", "\"${@}\""]
 
 #TODO for compatibility with tvb-make
 #ENTRYPOINT ["make"]
