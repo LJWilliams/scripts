@@ -8,6 +8,7 @@
 
 FROM ubuntu:22.04
 #MAINTAINER timpx <timpx@eml.cc>
+SHELL ["/bin/bash", "-c"]
 
 # /opt used during installation, but 
 # /opt/scripts is final workdir, set below
