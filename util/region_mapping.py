@@ -67,7 +67,7 @@ def read_annot(fname):
             if ctab_version != 2:
                 raise Exception('Color table version not supported')
             n_entries = np.fromfile(fid, '>i4', 1)[0]
-            ctab = np.zeros((n_entries, 5), np.int)
+            ctab = np.zeros((n_entries, 5), int)
             length = np.fromfile(fid, '>i4', 1)[0]
             np.fromfile(fid, "|S%d" % length, 1)  # Orig table path
             entries_to_read = np.fromfile(fid, '>i4', 1)[0]
