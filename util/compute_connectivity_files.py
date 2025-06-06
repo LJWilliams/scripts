@@ -198,7 +198,7 @@ if __name__ == '__main__':
         tri = tri.astype(int)
 
         curr_center = np.mean(verts, axis=0)
-        indx = int(corr_table[np.nonzero(corr_table[:, 0] == np.int(val)), 1])
+        indx = int(corr_table[np.nonzero(corr_table[:, 0] == int(val)), 1])
         centers[indx, :] = curr_center
         # Now calculate average orientations
         number_of_vertices = int(verts.shape[0])

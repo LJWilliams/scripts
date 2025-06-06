@@ -109,7 +109,7 @@ for iregion in range(regions.shape[0]):
 
             # iteration, reassign regions n the k-means to obtain same number of voxels in each subregion
             error_margin = np.sum(k_means.counts_)/(100*i_div) # 1%
-            print(np.int(error_margin/2))
+            print(int(error_margin/2))
             while np.any((subregion_counts<np.mean(subregion_counts)-error_margin) | (subregion_counts>np.mean(subregion_counts)+error_margin)):
             #for i in range(100):
                 print(subregion_counts)
@@ -132,8 +132,8 @@ for iregion in range(regions.shape[0]):
                             candidate_new_cluster.append(i_smallest_cluster)
                 changing_voxels_all = candidate_points[np.argmax(subregion_counts[candidate_clusters])]
                 new_cluster = candidate_new_cluster[np.argmax(subregion_counts[candidate_clusters])]
-                changing_voxels_closest = np.argsort(np.sum((iregion_voxels[changing_voxels_all]-cluster_centers[new_cluster])**2, 1))[:np.int(error_margin)] 
-                #changing_region = np.random.choice(candidate_points[np.argmax(subregion_counts[candidate_clusters])], np.int(error_margin))
+                changing_voxels_closest = np.argsort(np.sum((iregion_voxels[changing_voxels_all]-cluster_centers[new_cluster])**2, 1))[:int(error_margin)] 
+                #changing_region = np.random.choice(candidate_points[np.argmax(subregion_counts[candidate_clusters])], int(error_margin))
                 cluster_labels[changing_voxels_all[changing_voxels_closest]] = new_cluster
                                 
                 # new subregion count
