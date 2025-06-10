@@ -380,7 +380,7 @@ if [ ! -f "$PRD"/connectivity/predwi.mif ]; then
     done
     while [ "$select_images" == "y" ]; do
       i_im=$(($i_im + 1))
-      mrconvert $PRD/data/DWI/ $PRD/connectivity/predwi_"$i_im".mif \
+      mrconvert $PRD/data/DWI/dMRI.nii.gz $PRD/connectivity/predwi_"$i_im".mif \
                 -export_pe_table $PRD/connectivity/pe_table \
                 -export_grad_mrtrix $PRD/connectivity/bvecs_bvals_init \
                 -datatype float32 -stride 0,0,0,1 -force -nthreads "$NB_THREADS"
@@ -484,17 +484,17 @@ if [ ! -f "$PRD"/connectivity/predwi_denoised_preproc_bias.mif ]; then
   # see http://mrtrix.readthedocs.io/en/0.3.16/workflows/DWI_preprocessing_for_quantitative_analysis.html
   if [ -n "$ANTSPATH" ]; then
     echo "bias correct using ANTS"
-    dwibiascorrect $PRD/connectivity/predwi_denoised_preproc.mif \
+    dwibiascorrect ants $PRD/connectivity/predwi_denoised_preproc.mif \
                    $PRD/connectivity/predwi_denoised_preproc_bias.mif \
                    -mask $PRD/connectivity/mask_native.mif \
-                   -bias $PRD/connectivity/B1_bias.mif -ants -force \
+                   -bias $PRD/connectivity/B1_bias.mif -force \
                    -nthreads "$NB_THREADS"
   else
     echo "bias correct using FSL"
-    dwibiascorrect $PRD/connectivity/predwi_denoised_preproc.mif \
+    dwibiascorrect fsl $PRD/connectivity/predwi_denoised_preproc.mif \
                    $PRD/connectivity/predwi_denoised_preproc_bias.mif \
                    -mask $PRD/connectivity/mask_native.mif \
-                   -bias $PRD/connectivity/B1_bias.mif -fsl -force \
+                   -bias $PRD/connectivity/B1_bias.mif -force \
                    -nthreads "$NB_THREADS"
   fi
 fi
@@ -523,7 +523,8 @@ if [ ! -f "$PRD"/connectivity/dwi.mif ]; then
     echo "upsampling dwi"
     scale_factor=$( bc -l <<< "$native_voxelsize"/1.25 )
     echo "scale factor for upsampling is "$scale_factor""
-    mrresize $PRD/connectivity/predwi_denoised_preproc_bias.mif - -scale "$scale_factor" -force | \
+    #mrresize $PRD/connectivity/predwi_denoised_preproc_bias.mif - -scale "$scale_factor" -force | \
+    mrgrid $PRD/connectivity/predwi_denoised_preproc_bias.mif - -scale "$scale_factor" -force | \
     mrconvert - -datatype float32 -stride -1,+2,+3,+4 $PRD/connectivity/dwi.mif -force 
   else
     echo "no upsampling of dwi"
