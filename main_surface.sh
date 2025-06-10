@@ -544,7 +544,8 @@ if [ ! -f "$PRD"/connectivity/mask.mif ]; then
     echo "upsampling mask"
     scale_factor=$( bc -l <<< "$native_voxelsize"/1.25 )
     echo "scale factor for upsampling is "$scale_factor""
-    mrresize $PRD/connectivity/mask_native.mif - -scale "$scale_factor" -force | \
+    #mrresize $PRD/connectivity/mask_native.mif - -scale "$scale_factor" -force | \
+    mrgrid $PRD/connectivity/mask_native.mif - -scale "$scale_factor" -force | \    
     mrconvert - $PRD/connectivity/mask.mif -datatype bit -stride -1,+2,+3 \
               -force -nthreads "$NB_THREADS"
   else
