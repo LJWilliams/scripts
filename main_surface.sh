@@ -524,7 +524,7 @@ if [ ! -f "$PRD"/connectivity/dwi.mif ]; then
     scale_factor=$( bc -l <<< "$native_voxelsize"/1.25 )
     echo "scale factor for upsampling is "$scale_factor""
     #mrresize $PRD/connectivity/predwi_denoised_preproc_bias.mif - -scale "$scale_factor" -force | \
-    mrgrid $PRD/connectivity/predwi_denoised_preproc_bias.mif - -scale "$scale_factor" -force | \
+    mrgrid $PRD/connectivity/predwi_denoised_preproc_bias.mif regrid - -scale "$scale_factor" -force | \
     mrconvert - -datatype float32 -stride -1,+2,+3,+4 $PRD/connectivity/dwi.mif -force 
   else
     echo "no upsampling of dwi"
@@ -545,7 +545,7 @@ if [ ! -f "$PRD"/connectivity/mask.mif ]; then
     scale_factor=$( bc -l <<< "$native_voxelsize"/1.25 )
     echo "scale factor for upsampling is "$scale_factor""
     #mrresize $PRD/connectivity/mask_native.mif - -scale "$scale_factor" -force | \
-    mrgrid $PRD/connectivity/mask_native.mif - -scale "$scale_factor" -force | \    
+    mrgrid $PRD/connectivity/mask_native.mif regrid - -scale "$scale_factor" -force | \    
     mrconvert - $PRD/connectivity/mask.mif -datatype bit -stride -1,+2,+3 \
               -force -nthreads "$NB_THREADS"
   else
