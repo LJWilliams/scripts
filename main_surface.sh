@@ -366,7 +366,8 @@ if [ ! -f "$PRD"/connectivity/predwi.mif ]; then
   i_im=1
   echo "generate dwi mif file"
   echo "if asked, please select a series of images by typing a number"
-  mrconvert $PRD/data/DWI/ $PRD/connectivity/predwi_"$i_im".mif \
+  mrconvert $PRD/data/DWI/dMRI.nii.gz $PRD/connectivity/predwi_"$i_im".mif \
+            -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
             -export_pe_table $PRD/connectivity/pe_table \
 	    -export_grad_mrtrix $PRD/connectivity/bvecs_bvals_init \
             -datatype float32 -stride 0,0,0,1 -force -nthreads "$NB_THREADS"  
@@ -484,18 +485,27 @@ if [ ! -f "$PRD"/connectivity/predwi_denoised_preproc_bias.mif ]; then
   # see http://mrtrix.readthedocs.io/en/0.3.16/workflows/DWI_preprocessing_for_quantitative_analysis.html
   if [ -n "$ANTSPATH" ]; then
     echo "bias correct using ANTS"
-    dwibiascorrect ants $PRD/connectivity/predwi_denoised_preproc.mif \
-                   $PRD/connectivity/predwi_denoised_preproc_bias.mif \
-                   -mask $PRD/connectivity/mask_native.mif \
-                   -bias $PRD/connectivity/B1_bias.mif -force \
-                   -nthreads "$NB_THREADS"
+    #dwibiascorrect ants $PRD/connectivity/predwi_denoised_preproc.mif \
+    #               $PRD/connectivity/predwi_denoised_preproc_bias.mif \
+    #               -mask $PRD/connectivity/mask_native.mif \
+    #               -bias $PRD/connectivity/B1_bias.mif -force \
+    #               -nthreads "$NB_THREADS"
+    dwibiascorrect ants -mask $PRD/connectivity/mask_native.mif \
+                   -bias $PRD/connectivity/B1_bias.mif \
+                   -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
+                   -nthreads "$NB_THREADS" -force \
+                   $PRD/connectivity/predwi_denoised_preproc.mif \
+                   $PRD/connectivity/predwi_denoised_preproc_bias.mif 
+                   
   else
     echo "bias correct using FSL"
-    dwibiascorrect fsl $PRD/connectivity/predwi_denoised_preproc.mif \
-                   $PRD/connectivity/predwi_denoised_preproc_bias.mif \
-                   -mask $PRD/connectivity/mask_native.mif \
-                   -bias $PRD/connectivity/B1_bias.mif -force \
-                   -nthreads "$NB_THREADS"
+    dwibiascorrect fsl -mask $PRD/connectivity/mask_native.mif \
+                   -bias $PRD/connectivity/B1_bias.mif \
+                   -nthreads "$NB_THREADS" -force \
+                   -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
+                   $PRD/connectivity/predwi_denoised_preproc.mif \
+                   $PRD/connectivity/predwi_denoised_preproc_bias.mif 
+                   
   fi
 fi
 # check bias field correction
@@ -602,7 +612,8 @@ if [ ! -f "$PRD"/connectivity/lowb.nii.gz ]; then
   if [ "$REGISTRATION" = "regular" ] || [ "$REGISTRATION" = "boundary" ]; then
     echo "extracting b0 vols for registration"
     dwiextract $PRD/connectivity/dwi.mif $PRD/connectivity/lowb.mif \
-               -bzero -force -nthreads "$NB_THREADS" 
+               -bzero -force -nthreads "$NB_THREADS" \
+               -fslgrad /opt/processing/data/DWI/bvecs /opt/processing/data/DWI/bvals
     # stride from mrtrix to FSL, RAS to LAS
     # see: http://mrtrix.readthedocs.io/en/latest/getting_started/image_data.html
     mrconvert $PRD/connectivity/lowb.mif $PRD/connectivity/lowb.nii.gz \
