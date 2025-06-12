@@ -396,6 +396,7 @@ if [ ! -f "$PRD"/connectivity/predwi.mif ]; then
     done
   fi
   mrinfo $PRD/connectivity/predwi.mif \
+        -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
         -export_grad_mrtrix $PRD/connectivity/bvecs_bvals_init \
         -export_pe_table $PRD/connectivity/pe_table -force 
 fi
@@ -527,6 +528,7 @@ fi
 # see: http://community.mrtrix.org/t/upsampling-dwi-vs-tckgen-defaults/998/2
 if [ ! -f "$PRD"/connectivity/dwi.mif ]; then
   native_voxelsize=$(mrinfo $PRD/connectivity/mask_native.mif -spacing \
+                    -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    | cut -f 1 -d " " | xargs printf "%.3f")
   upsampling=$(echo ""$native_voxelsize">1.25" | bc) 
   if [ "$upsampling" = 1 ]; then
@@ -548,6 +550,7 @@ if [ ! -f "$PRD"/connectivity/mask.mif ]; then
   # https://github.com/BIDS-Apps/MRtrix3_connectome/blob/master/run.py
   view_step=1
   native_voxelsize=$(mrinfo $PRD/connectivity/mask_native.mif -spacing \
+                     -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    | cut -f 1 -d " " | xargs printf "%.3f")
   upsampling=$(echo ""$native_voxelsize">1.25" | bc) 
   if [ "$upsampling" = 1 ]; then
