@@ -860,6 +860,7 @@ if [ ! -f "$PRD"/connectivity/whole_brain.tck ]; then
     number_tracks=$(($NUMBER_TRACKS*$SIFT_MULTIPLIER))
   fi
   native_voxelsize=$(mrinfo $PRD/connectivity/mask_native.mif -spacing \
+                     -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    | cut -f 1 -d " " | xargs printf "%.3f")
   upsampling=$(echo ""$native_voxelsize">1.25" | bc) 
   if [ "$upsampling" = 1 ]; then
