@@ -174,8 +174,7 @@ if __name__ == '__main__':
     # calculate average orientations
     number_of_vertices = int(verts.shape[0])
     number_of_triangles = int(tri.shape[0])
-    vertex_triangles = compute_vertex_triangles(number_of_vertices, number_of_triangles,
-                                        tri)
+    vertex_triangles = compute_vertex_triangles(number_of_vertices, number_of_triangles, tri)
     triangle_normals = compute_triangle_normals(tri, verts)
     triangle_angles = compute_triangle_angles(verts, number_of_triangles, tri)
     vertex_normals = compute_vertex_normals(number_of_vertices, vertex_triangles,
