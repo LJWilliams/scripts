@@ -369,7 +369,7 @@ if [ ! -f "$PRD"/connectivity/predwi.mif ]; then
   mrconvert $PRD/data/DWI/dMRI.nii.gz $PRD/connectivity/predwi_"$i_im".mif \
             -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
             -export_pe_table $PRD/connectivity/pe_table \
-	    -export_grad_mrtrix $PRD/connectivity/bvecs_bvals_init \
+	          -export_grad_mrtrix $PRD/connectivity/bvecs_bvals_init \
             -datatype float32 -stride 0,0,0,1 -force -nthreads "$NB_THREADS"  
   cp $PRD/connectivity/predwi_1.mif $PRD/connectivity/predwi.mif
   if [ "$FORCE" = "no" ]; then
@@ -382,6 +382,7 @@ if [ ! -f "$PRD"/connectivity/predwi.mif ]; then
     while [ "$select_images" == "y" ]; do
       i_im=$(($i_im + 1))
       mrconvert $PRD/data/DWI/dMRI.nii.gz $PRD/connectivity/predwi_"$i_im".mif \
+                -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                 -export_pe_table $PRD/connectivity/pe_table \
                 -export_grad_mrtrix $PRD/connectivity/bvecs_bvals_init \
                 -datatype float32 -stride 0,0,0,1 -force -nthreads "$NB_THREADS"
@@ -469,7 +470,8 @@ if [ ! -f "$PRD"/connectivity/mask_native.mif ]; then
   echo "create dwi mask"
   view_step=1
   dwi2mask $PRD/connectivity/predwi_denoised_preproc.mif \
-           $PRD/connectivity/mask_native.mif -nthreads "$NB_THREADS"
+           $PRD/connectivity/mask_native.mif -nthreads "$NB_THREADS" \
+           -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals
 fi
 # check mask file
 if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ]  && [ -n "$DISPLAY" ]; then
@@ -493,7 +495,7 @@ if [ ! -f "$PRD"/connectivity/predwi_denoised_preproc_bias.mif ]; then
     #               -nthreads "$NB_THREADS"
     dwibiascorrect ants -mask $PRD/connectivity/mask_native.mif \
                    -bias $PRD/connectivity/B1_bias.mif \
-                   -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
+                   #-fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    -nthreads "$NB_THREADS" -force \
                    $PRD/connectivity/predwi_denoised_preproc.mif \
                    $PRD/connectivity/predwi_denoised_preproc_bias.mif 
@@ -528,7 +530,6 @@ fi
 # see: http://community.mrtrix.org/t/upsampling-dwi-vs-tckgen-defaults/998/2
 if [ ! -f "$PRD"/connectivity/dwi.mif ]; then
   native_voxelsize=$(mrinfo $PRD/connectivity/mask_native.mif -spacing \
-                    -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    | cut -f 1 -d " " | xargs printf "%.3f")
   upsampling=$(echo ""$native_voxelsize">1.25" | bc) 
   if [ "$upsampling" = 1 ]; then
@@ -537,7 +538,7 @@ if [ ! -f "$PRD"/connectivity/dwi.mif ]; then
     echo "scale factor for upsampling is "$scale_factor""
     #mrresize $PRD/connectivity/predwi_denoised_preproc_bias.mif - -scale "$scale_factor" -force | \
     mrgrid $PRD/connectivity/predwi_denoised_preproc_bias.mif regrid - -scale "$scale_factor" -force | \
-    mrconvert - -datatype float32 -stride -1,+2,+3,+4 $PRD/connectivity/dwi.mif -force 
+    mrconvert - -datatype float32 -stride -1,+2,+3,+4 -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals $PRD/connectivity/dwi.mif -force 
   else
     echo "no upsampling of dwi"
     mrconvert $PRD/connectivity/predwi_denoised_preproc_bias.mif -datatype float32 -stride -1,+2,+3,+4 $PRD/connectivity/dwi.mif -force
@@ -550,7 +551,6 @@ if [ ! -f "$PRD"/connectivity/mask.mif ]; then
   # https://github.com/BIDS-Apps/MRtrix3_connectome/blob/master/run.py
   view_step=1
   native_voxelsize=$(mrinfo $PRD/connectivity/mask_native.mif -spacing \
-                     -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    | cut -f 1 -d " " | xargs printf "%.3f")
   upsampling=$(echo ""$native_voxelsize">1.25" | bc) 
   if [ "$upsampling" = 1 ]; then
@@ -558,8 +558,7 @@ if [ ! -f "$PRD"/connectivity/mask.mif ]; then
     scale_factor=$( bc -l <<< "$native_voxelsize"/1.25 )
     echo "scale factor for upsampling is "$scale_factor""
     #mrresize $PRD/connectivity/mask_native.mif - -scale "$scale_factor" -force | \
-    mrgrid $PRD/connectivity/mask_native.mif regrid - -scale "$scale_factor" -force | \    
-    mrconvert - $PRD/connectivity/mask.mif -datatype bit -stride -1,+2,+3 \
+    mrgrid $PRD/connectivity/mask_native.mif regrid - -scale "$scale_factor" -force | mrconvert - $PRD/connectivity/mask.mif -datatype bit -stride -1,+2,+3 \
               -force -nthreads "$NB_THREADS"
   else
     echo "no upsampling of the mask"
@@ -577,7 +576,7 @@ if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ] && [ -n "$
   mrview $PRD/connectivity/dwi.mif \
          -overlay.load $PRD/connectivity/mask.mif \
          -overlay.load $PRD/connectivity/mask_dilated.mif \
-         -overlay.opacity 0.5 -norealign 
+         -overlay.opacity 0.5 #-norealign 
 fi
 
 
@@ -615,8 +614,7 @@ if [ ! -f "$PRD"/connectivity/lowb.nii.gz ]; then
   if [ "$REGISTRATION" = "regular" ] || [ "$REGISTRATION" = "boundary" ]; then
     echo "extracting b0 vols for registration"
     dwiextract $PRD/connectivity/dwi.mif $PRD/connectivity/lowb.mif \
-               -bzero -force -nthreads "$NB_THREADS" \
-               -fslgrad /opt/processing/data/DWI/bvecs /opt/processing/data/DWI/bvals
+               -bzero -force -nthreads "$NB_THREADS" 
     # stride from mrtrix to FSL, RAS to LAS
     # see: http://mrtrix.readthedocs.io/en/latest/getting_started/image_data.html
     mrconvert $PRD/connectivity/lowb.mif $PRD/connectivity/lowb.nii.gz \
@@ -643,7 +641,7 @@ if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ] && [ -n "$
   view_step=0
   mrview $PRD/connectivity/lowb.mif \
          -overlay.load $PRD/connectivity/dwi.mif \
-         -overlay.opacity 1. -norealign
+         -overlay.opacity 1. #-norealign
 fi
 
 # aparc+aseg to FSL
@@ -677,7 +675,7 @@ if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ] && [ -n "$
   view_step=0
   mrview $PRD/connectivity/brain.nii.gz \
          -overlay.load $PRD/connectivity/aparc+aseg_reorient.nii.gz \
-         -overlay.opacity 0.5 -norealign
+         -overlay.opacity 0.5 #-norealign
 fi
 
 # aparcaseg to diff by inverse transform
@@ -743,7 +741,7 @@ if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ] && [ -n "$
   mrview $PRD/connectivity/brain_2_diff.nii.gz \
          $PRD/connectivity/lowb.nii.gz \
          -overlay.load $PRD/connectivity/aparcaseg_2_diff.nii.gz \
-         -overlay.opacity 0.5 -norealign
+         -overlay.opacity 0.5 #-norealign
 fi
 
 
@@ -770,12 +768,11 @@ fi
 
 # Response function estimation
 # Check if multi or single shell
-shells=$(mrinfo -shell_bvalues $PRD/connectivity/dwi.mif \ 
-         -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals)
+shells=$(mrinfo -shell_bvalues $PRD/connectivity/dwi.mif ) 
 echo "shell b values are $shells"
 nshells=($shells)
 no_shells=${#nshells[@]}
-echo "no of shells are $no_shells"
+echo "number of shells are $no_shells"
 
 if [ "$no_shells" -gt 2 ]; then
 # Multishell
@@ -863,7 +860,6 @@ if [ ! -f "$PRD"/connectivity/whole_brain.tck ]; then
     number_tracks=$(($NUMBER_TRACKS*$SIFT_MULTIPLIER))
   fi
   native_voxelsize=$(mrinfo $PRD/connectivity/mask_native.mif -spacing \
-                     -fslgrad $PRD/data/DWI/bvecs $PRD/data/DWI/bvals \
                    | cut -f 1 -d " " | xargs printf "%.3f")
   upsampling=$(echo ""$native_voxelsize">1.25" | bc) 
   if [ "$upsampling" = 1 ]; then
@@ -1048,7 +1044,7 @@ if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ] && [ -n "$
   # and exemplars.tck if wanting to see edges as streamlines 
   mrview $PRD/connectivity/aparcaseg_2_diff_$ASEG.mif \
          -connectome.init $PRD/connectivity/aparcaseg_2_diff_$ASEG.mif \
-         -connectome.load $PRD/connectivity/weights.csv 
+         -connectome.load $PRD/connectivity/weights.csv  
 fi
 
 # view tractogram and tdi
@@ -1087,7 +1083,7 @@ if [ "$view_step" = 1 -a "$CHECK" = "yes" ] || [ "$CHECK" = "force" ] && [ -n "$
   fi
   mrview $PRD/connectivity/aparcaseg_2_diff_$ASEG.mif \
          -overlay.load $PRD/connectivity/whole_brain_post_tdi.mif \
-         -overlay.opacity 0.5 -overlay.interpolation_off \
+         -overlay.opacity 0.5  \
          -tractography.load $PRD/connectivity/whole_brain_post_decimated.tck 
 fi
 
