@@ -153,8 +153,8 @@ if __name__ == '__main__':
     tri = tri.astype(int)
     region_mapping = np.loadtxt(os.path.join(PRD, SUBJ_ID, 'surface', 'region_mapping.txt')).astype(int)
     # save connectivity and tract length matrices
-    weights = np.loadtxt(os.path.join(PRD, 'connectivity', 'weights.csv'))
-    tract_lengths = np.loadtxt(os.path.join(PRD, 'connectivity', 'tract_lengths.csv'))
+    weights = np.loadtxt(os.path.join(PRD, 'connectivity', 'weights.csv'), delimiter=",")
+    tract_lengths = np.loadtxt(os.path.join(PRD, 'connectivity', 'tract_lengths.csv'), delimiter=",")
     weights = weights + weights.transpose() - np.diag(np.diag(weights))
     # add the first region
     weights = np.vstack([np.zeros((1, weights.shape[0])), weights])
