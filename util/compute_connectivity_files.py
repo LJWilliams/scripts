@@ -112,7 +112,7 @@ def compute_triangle_normals(triangles, vertices):
 
 def compute_region_areas_cortex(triangle_areas, vertex_triangles, region_mapping, list_name):
     regions = np.unique(region_mapping)
-    print(regions)
+    print(regions.dtype)
     region_surface_area = np.zeros((list_name.shape[0], 1))
     if isinstance(triangle_areas, np.ndarray):
         avt = vertex_triangles
