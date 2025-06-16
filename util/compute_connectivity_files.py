@@ -123,7 +123,7 @@ def compute_region_areas_cortex(triangle_areas, vertex_triangles, region_mapping
     for k in regions:
         print(k.dtype)
         regs = map(set, avt[region_mapping.tolist == int(k)])
-        region_triangles = set.union(*regs)
+        region_triangles = set.union(regs) #set.union(*regs)
         region_surface_area[k] = triangle_areas[list(region_triangles)].sum()
     return region_surface_area
 
