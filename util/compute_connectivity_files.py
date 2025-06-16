@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
     # compute areas
     triangle_areas = compute_triangle_areas(verts, tri)
-    print(triangle_areas.dtype)
+    print(isinstance(triangle_areas, numpy.ndarray))
     areas = compute_region_areas_cortex(triangle_areas, vertex_triangles, region_mapping, list_name)
 
     # subcorticals
