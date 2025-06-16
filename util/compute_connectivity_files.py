@@ -16,7 +16,10 @@ def compute_triangle_areas(vertices, triangles):
 
 
 def compute_region_areas(triangles_areas, vertex_triangles):
-    avt = np.array(vertex_triangles)
+    if isinstance(triangle_areas, np.ndarray):
+        avt = vertex_triangles
+    else:
+        avt = np.array(vertex_triangles, dtype=np.float64)
     #NOTE: Slightly overestimates as it counts overlapping border triangles,
     #      but, not really a problem provided triangle-size << region-size.
     regs = map(set, avt)
