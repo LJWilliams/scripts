@@ -108,7 +108,7 @@ for iregion in range(regions.shape[0]):
             _, subregion_counts = np.unique(k_means.labels_, return_counts=True)
 
             # iteration, reassign regions n the k-means to obtain same number of voxels in each subregion
-            error_margin = np.sum(k_means.counts_)/(100*i_div) # 1%
+            error_margin = np.sum(k_means._counts)/(100*i_div) # 1%
             print(int(error_margin/2))
             while np.any((subregion_counts<np.mean(subregion_counts)-error_margin) | (subregion_counts>np.mean(subregion_counts)+error_margin)):
             #for i in range(100):
