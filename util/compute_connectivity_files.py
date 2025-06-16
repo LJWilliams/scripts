@@ -112,6 +112,7 @@ def compute_triangle_normals(triangles, vertices):
 
 def compute_region_areas_cortex(triangle_areas, vertex_triangles, region_mapping, list_name):
     regions = np.unique(region_mapping)
+    print(regions)
     region_surface_area = np.zeros((list_name.shape[0], 1))
     if isinstance(triangle_areas, np.ndarray):
         avt = vertex_triangles
@@ -120,7 +121,7 @@ def compute_region_areas_cortex(triangle_areas, vertex_triangles, region_mapping
     #NOTE: Slightly overestimates as it counts overlapping border triangles,
     #      but, not really a problem provided triangle-size << region-size.
     for k in regions:
-        regs = map(set, avt[region_mapping == int64(k)])
+        regs = map(set, avt[region_mapping == k])
         region_triangles = set.union(*regs)
         region_surface_area[k] = triangle_areas[list(region_triangles)].sum()
     return region_surface_area
