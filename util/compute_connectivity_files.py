@@ -120,8 +120,7 @@ def compute_region_areas_cortex(triangle_areas, vertex_triangles, region_mapping
     #NOTE: Slightly overestimates as it counts overlapping border triangles,
     #      but, not really a problem provided triangle-size << region-size.
     for k in regions:
-        regs = map(set, avt[region_mapping.tolist == k])
-        regs.tolist
+        regs = map(set, avt[region_mapping.tolist == k.tolist])
         region_triangles = set.union(*regs)
         region_surface_area[k] = triangle_areas[list(region_triangles)].sum()
     return region_surface_area
