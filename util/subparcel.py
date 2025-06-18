@@ -81,6 +81,7 @@ while np.sum(l_nb_subdivisions[l_idx_subdivisions])<N_SUBREGIONS/2:
     while l_nb_subdivisions[l_idx_subdivisions[np.argsort(curr_std)[iregion_update]]+1]-l_nb_subdivisions[l_idx_subdivisions[np.argsort(curr_std)[iregion_update]]] > N_SUBREGIONS/2 - np.sum(l_nb_subdivisions[l_idx_subdivisions]):
         iregion_update +=1
     l_idx_subdivisions[np.argsort(curr_std)[iregion_update]] += 1
+
 l_idx_subdivisions = np.tile(l_idx_subdivisions, (2,)) # for other hemisphere
 
 if np.sum(l_nb_subdivisions[l_idx_subdivisions])!=N_SUBREGIONS:
@@ -178,7 +179,7 @@ nib.save(new_img, os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(N_
 ref_table = np.loadtxt('share/reference_table_' + PARCEL + '.csv', dtype='bytes', skiprows=1, delimiter=',').astype('str')
 
 name_region = ref_table[:,1];
-cortical = ref_table[:, 7].astype(bool);
+cortical = ref_table[:, 7].astype(int).astype(bool);
 
 name_region_subcortical = name_region[~cortical][1:] # we remove region unknown
 name_region_cortical = name_region[cortical]
