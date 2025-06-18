@@ -186,7 +186,7 @@ name_region_cortical = name_region[cortical]
 name_subregion_cortical, idx_subregion_cortical = [], []
 for iregion, region in enumerate(name_region_cortical):
     name_subregion_cortical.extend([region]*l_nb_subdivisions[l_idx_subdivisions[iregion]])
-    idx_subregion_cortical.extend([str(i) for i in range(l_nb_subdivisions[l_idx_subdivisions[iregion]])])
+    idx_subregion_cortical.extend([str(i) for i in range(l_nb_subdivisions[l_idx_subdivisions[iregion-1]])])
 
 average_orientations = np.loadtxt(os.path.join(PRD, SUBJ_ID, 'connectivity', 'average_orientations.txt'));
 average_orientations_subcortical = average_orientations[~cortical][1:]
