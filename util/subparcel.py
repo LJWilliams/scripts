@@ -184,6 +184,7 @@ cortical = ref_table[:, 7].astype(int).astype(bool);
 name_region_subcortical = name_region[~cortical][1:] # we remove region unknown
 name_region_cortical = name_region[cortical]
 name_subregion_cortical, idx_subregion_cortical = [], []
+print("Num region cortical: " + str(len(name_region_cortical)))
 for iregion, region in enumerate(name_region_cortical):
     print(region)
     print(l_idx_subdivisions[iregion])
