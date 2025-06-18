@@ -33,7 +33,7 @@ data_parcellation_cortical_only = copy.deepcopy(data_parcellation)
 list_subcortical_regions = [2, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 
                             18, 24, 26, 28, 30, 31, 41, 43, 44, 46, 47, 49,
                             50, 51, 52, 53, 54, 58, 60, 62, 63, 72, 77, 80, 
-                            85, 251, 252, 253, 254, 255]
+                            85, 251, 252, 253, 254, 255, ]
 for subcortical_region in list_subcortical_regions:
     data_parcellation_cortical_only[data_parcellation==subcortical_region] = 0
 
@@ -180,6 +180,11 @@ ref_table = np.loadtxt('share/reference_table_' + PARCEL + '.csv', dtype='bytes'
 
 name_region = ref_table[:,1];
 cortical = ref_table[:, 7].astype(int).astype(bool);
+
+idx_lh_Medial_wall = name_region.index("ctx_lh_Medial_wall")
+idx_rh_Medial_wall = name_region.index("ctx_rh_Medial_wall")
+cortical[idx_lh_Medial_wall] = False
+cortical[idx_rh_Medial_wall] = False
 
 name_region_subcortical = name_region[~cortical][1:] # we remove region unknown
 name_region_cortical = name_region[cortical]
