@@ -187,8 +187,8 @@ name_subregion_cortical, idx_subregion_cortical = [], []
 for iregion, region in enumerate(name_region_cortical):
     print(region)
     print(l_idx_subdivisions[iregion])
-    print(l_nb_subdivisions[l_idx_subdivis[iregion]])
-    name_subregion_cortical.extend([region]*ionsl_nb_subdivisions[l_idx_subdivis[iregion]])
+    print(l_nb_subdivisions[l_idx_subdivisions[iregion]])
+    name_subregion_cortical.extend([region]*ionsl_nb_subdivisions[l_idx_subdivisions[iregion]])
     print(name_subregion_cortical[-1])
     idx_subregion_cortical.extend([str(i) for i in range(l_nb_subdivisions[l_idx_subdivisions[iregion]])])
 
