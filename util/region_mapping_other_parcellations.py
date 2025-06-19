@@ -69,9 +69,9 @@ def surface_projection(SUBJ_ID, PRD, img, img_aff, label, subcortical, DISPLAY,
                         vox_list_add.append((ivox[0], ivox[1], ivox[2]+1))
                     if (ivox[0], ivox[1], ivox[2]-1) not in vox_list + vox_list_add:
                         vox_list_add.append((ivox[0], ivox[1], ivox[2]-1))
-                if icount>10:
-                    raise ValueError('had too look more than 10 voxels away, \
-                                      check parcellation/surface coregistration')
+                #if icount>10:
+                #    raise ValueError('had too look more than 10 voxels away, \
+                #                      check parcellation/surface coregistration')
             final_vox_list = [i for i in vert_assign if i!=0]
             most_common_vox = collections.Counter(final_vox_list).most_common()[0][0]-1
             if len(subcortical)>0: # assign the mapping of subcortical regions to 0
