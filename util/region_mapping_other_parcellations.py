@@ -264,7 +264,7 @@ if __name__ == '__main__':
     K = N_SUBREGIONS
 
     img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(K) +'.nii.gz'))
-    img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
+    img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff.nii.gz')) # img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
     
     subcortical = [isub for isub in range(int(K)*70+1, int(K)*70+18)]
 
