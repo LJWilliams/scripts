@@ -261,12 +261,13 @@ if __name__ == '__main__':
     else:
         DISPLAY = ""
         
-    K = N_SUBREGIONS
+    
 
-    img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(K) +'.nii.gz'))
+    img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(N_SUBREGIONS) +'.nii.gz'))
     img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff.nii.gz')) # img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
     
-    subcortical = [isub for isub in range(int(K)*70+1, int(K)*70+18)]
+    #subcortical = [isub for isub in range(int(K)*70+1, int(K)*70+18)]
+    subcortical = np.unique(img.get_fdata())[-17:] # get last 17 regions for 17 subcortical regions kept by subparcel.py
 
     surface_projection(SUBJ_ID, PRD, img, img_aff, N_SUBREGIONS, subcortical, DISPLAY, CHECK)
     
