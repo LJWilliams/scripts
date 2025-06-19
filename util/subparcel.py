@@ -181,12 +181,12 @@ ref_table = np.loadtxt('share/reference_table_' + PARCEL + '.csv', dtype='bytes'
 name_region = ref_table[:,1];
 cortical = ref_table[:, 7].astype(int).astype(bool);
 
-idx_lh_Medial_wall[0] = np.where(name_region == "ctx_lh_Medial_wall")
+idx_lh_Medial_wall = np.where(name_region == "ctx_lh_Medial_wall")
 print(idx_lh_Medial_wall)
-idx_rh_Medial_wall[0] = np.where(name_region == "ctx_rh_Medial_wall")
+idx_rh_Medial_wall = np.where(name_region == "ctx_rh_Medial_wall")
 print(idx_rh_Medial_wall)
-cortical[idx_lh_Medial_wall] = False
-cortical[idx_rh_Medial_wall] = False
+cortical[idx_lh_Medial_wall[0]] = False
+cortical[idx_rh_Medial_wall[0]] = False
 
 name_region_subcortical = name_region[~cortical][1:] # we remove region unknown
 name_region_cortical = name_region[cortical]
