@@ -20,7 +20,7 @@ def surface_projection(SUBJ_ID, PRD, img, img_aff, label, subcortical, DISPLAY,
     print('project original region mapping to the new parcellation')
 
     parcellation_new  = img.get_fdata()
-    affine = img_aff.get_affine()
+    affine = img_aff._affine() #.get_affine()
     verts_origin= np.loadtxt(os.path.join(PRD, SUBJ_ID, 'surface', 'vertices.txt')) 
 
     # project vertice coordinaates in voxel coordinaates in diffusion space
