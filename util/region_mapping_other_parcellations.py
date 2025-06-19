@@ -19,7 +19,7 @@ def surface_projection(SUBJ_ID, PRD, img, img_aff, label, subcortical, DISPLAY,
     """
     print('project original region mapping to the new parcellation')
 
-    parcellation_new  = img.get_data()
+    parcellation_new  = img.get_fdata()
     affine = img_aff.get_affine()
     verts_origin= np.loadtxt(os.path.join(PRD, SUBJ_ID, 'surface', 'vertices.txt')) 
 
@@ -262,7 +262,7 @@ if __name__ == '__main__':
     else:
         DISPLAY = ""
     print("K = " + str(K))
-    
+
     img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(K) +'.nii.gz'))
     img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
     
