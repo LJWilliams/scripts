@@ -256,11 +256,13 @@ if __name__ == '__main__':
     REGION_MAPPING_CORR = os.environ['REGION_MAPPING_CORR']
     N_SUBREGIONS = os.environ['N_SUBREGIONS']
     N_SUBREGIONS = int(N_SUBREGIONS)
+    K = N_SUBREGIONS
     if "DISPLAY" in os.environ:
         DISPLAY = os.environ['DISPLAY']
     else:
         DISPLAY = ""
-
+    print("K = " + str(K))
+    
     img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(K) +'.nii.gz'))
     img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
     
