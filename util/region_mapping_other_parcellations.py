@@ -23,13 +23,14 @@ def surface_projection(SUBJ_ID, PRD, img, img_aff, label, subcortical, DISPLAY,
     affine = img_aff.affine #.get_affine()
     verts_origin= np.loadtxt(os.path.join(PRD, SUBJ_ID, 'surface', 'vertices.txt')) 
 
+    # convert vertices to diffusion space
     # project vertice coordinaates in voxel coordinaates in diffusion space
-    verts_vox = np.round(np.dot(np.linalg.inv(affine), np.hstack([verts_origin, np.ones((verts_origin.shape[0], 1))]).T)[:3].T).astype(int)
-
+    verts_vox = np.round(np.dot(np.linalg.inv(affine), np.hstack([verts_origin, np.ones((verts_origin.shape[0], 1))]).T)[:3].T).astype(int) # assumes dti has 1mm voxels, which it does
+    
     if CHECK=="yes" and len(DISPLAY)>0:
         # check that the surface and the parcellation are in the same space
-        n = 100 
-        slice_n = np.nonzero(verts_vox[:, 0]==n)
+        n = 100
+        slice_n = np.nonzero(verts_vox[:, 1]==n)
         plt.figure(figsize=(13, 5))
         plt.subplot(121)
         plt.scatter(verts_vox[slice_n, 1], verts_vox[slice_n, 2])
@@ -56,6 +57,7 @@ def surface_projection(SUBJ_ID, PRD, img, img_aff, label, subcortical, DISPLAY,
                 vox_list.extend(vox_list_add)
                 for ivox in vox_list: # find the region mapping value for the voxes list
                     vert_assign.append(parcellation_new[ivox[0], ivox[1], ivox[2]])
+                    print("ivox = " + str(ivox))
                 for ivox in vox_list: # add the nearest neighbout vox
                     if (ivox[0]+1, ivox[1], ivox[2]) not in vox_list + vox_list_add:
                         vox_list_add.append((ivox[0]+1, ivox[1], ivox[2]))
@@ -69,9 +71,12 @@ def surface_projection(SUBJ_ID, PRD, img, img_aff, label, subcortical, DISPLAY,
                         vox_list_add.append((ivox[0], ivox[1], ivox[2]+1))
                     if (ivox[0], ivox[1], ivox[2]-1) not in vox_list + vox_list_add:
                         vox_list_add.append((ivox[0], ivox[1], ivox[2]-1))
-                #if icount>10:
-                #    raise ValueError('had too look more than 10 voxels away, \
-                #                      check parcellation/surface coregistration')
+                print("ivox = " + str(ivox))
+                print("icount = " + str(icount)) 
+                print("Vertex assigned: " + str(vert_assign[-1]))
+                if icount>10:
+                    raise ValueError('had too look more than 10 voxels away, \
+                                      check parcellation/surface coregistration')
             final_vox_list = [i for i in vert_assign if i!=0]
             most_common_vox = collections.Counter(final_vox_list).most_common()[0][0]-1
             if len(subcortical)>0: # assign the mapping of subcortical regions to 0
@@ -260,14 +265,17 @@ if __name__ == '__main__':
         DISPLAY = os.environ['DISPLAY']
     else:
         DISPLAY = ""
-        
+    
+    K = N_SUBREGIONS    
     
 
     img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(N_SUBREGIONS) +'.nii.gz'))
-    img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff.nii.gz')) # img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
+    img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz')) # img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
+
+    transform_mat = np.genfromtxt(os.path.join(PRD, 'connectivity', 'diffusion_2_struct_mrtrix_4_python.txt'), delimiter="  ", dtype='float')
     
-    #subcortical = [isub for isub in range(int(K)*70+1, int(K)*70+18)]
-    subcortical = np.unique(img.get_fdata())[-17:] # get last 17 regions for 17 subcortical regions kept by subparcel.py
+    subcortical = [isub for isub in range(int(K)*70+1, int(K)*70+18)]
+    #subcortical = np.unique(img.get_fdata())[-17:] # get last 17 regions for 17 subcortical regions kept by subparcel.py
 
     surface_projection(SUBJ_ID, PRD, img, img_aff, N_SUBREGIONS, subcortical, DISPLAY, CHECK)
     
