@@ -269,10 +269,10 @@ if __name__ == '__main__':
     K = N_SUBREGIONS    
     
 
-    img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(N_SUBREGIONS) +'.nii.gz'))
+    img = nib.load(os.path.join(PRD, 'connectivity', 'aparcaseg_2_diff_' + str(K) +'.nii.gz'))
     img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz')) # img_aff = nib.load(os.path.join(PRD, 'connectivity', 'aparc+aseg.nii.gz'))
 
-    transform_mat = np.genfromtxt(os.path.join(PRD, 'connectivity', 'diffusion_2_struct_mrtrix_4_python.txt'), delimiter="  ", dtype='float')
+    #transform_mat = np.genfromtxt(os.path.join(PRD, 'connectivity', 'diffusion_2_struct_mrtrix_4_python.txt'), delimiter="  ", dtype='float')
     
     subcortical = [isub for isub in range(int(K)*70+1, int(K)*70+18)]
     #subcortical = np.unique(img.get_fdata())[-17:] # get last 17 regions for 17 subcortical regions kept by subparcel.py
